@@ -22,12 +22,151 @@ class Certificate(AWSProperty):
         'CertificateArn': (basestring, False)
     }
 
-
 class Action(AWSProperty):
     props = {
-        'TargetGroupArn': (basestring, True),
+        'AuthenticateCognitoConfig': (AuthenticateCognitoActionConfig, False),
+        'AuthenticateOidcConfig': (AuthenticateOidcActionConfig, False),
+        'FixedResponseConfig': (FixedResponseActionConfig, False)
+        'Order': (basestring, False),
+        'RedirectConfig' (RedirectActionConfig, False),
+        'TargetGroupArn': (basestring, False),
         'Type': (basestring, True)
     }
+
+    def validate(self):
+        valid_types = [
+            'forward',
+            'authenticate-oidc',
+            'authenticate-cognito',
+            'redirect',
+            'fixed-response'
+        ]
+        if self.properties['Type'] not in valid_types:
+            raise ValueError(
+                "Type must be one of: %s"
+                % ", ".join(valid_actions)
+            )
+
+        if (self.properties.get("Order") and
+                self.properties["Order"] not in range(1, 50001):
+            raise ValueError(
+                "Order of length: %s is out of range 1-50000"
+                % self.properties["Order"]
+            )
+
+
+class AuthenticateCognitoActionConfig(AWSProperty):
+    props = {
+        'AuthenticationRequestExtraParams': (basestring, False)
+        'OnUnauthenticatedRequest': (basestring, False)
+        'Scope': (basestring, False)
+        'SessionCookieName': (basestring, False)
+        'SessionTimeout': (integer, False)
+        'UserPoolArn': (basestring, True)
+        'UserPoolClientId': (basestring, True)
+        'UserPoolDomain': (basestring, True)
+    }
+
+    def validate(self):
+        valid_actions = ['deny', 'allow', 'authenticate']
+        if (self.properties.get('OnUnauthenticatedRequest', None) and
+            self.properties['OnUnauthenticatedRequest'] not in valid_actions):
+
+            raise ValueError(
+                "OnUnauthenticatedRequest must be one of: %s"
+                % ", ".join(valid_actions)
+            )
+
+
+class AuthenticateOidcActionConfig(AWSProperty):
+    props = {
+        'AuthenticationRequestExtraParams': (basestring, False)
+        'AuthorizationEndpoint': (basestring, True)
+        'ClientId': (basestring, True)
+        'ClientSecret': (basestring, True)
+        'Issuer': (basestring, True)
+        'OnUnauthenticatedRequest': (basestring, False)
+        'Scope': (basestring, False)
+        'SessionCookieName': (basestring, False)
+        'SessionTimeout': (integer, False)
+        'TokenEndpoint': (basestring, True)
+        'UserInfoEndpoint': (basestring, True)
+    }
+
+    def validate(self):
+        valid_actions = ['deny', 'allow', 'authenticate']
+        if (self.properties.get('OnUnauthenticatedRequest', None) and
+            self.properties['OnUnauthenticatedRequest'] not in valid_actions):
+
+            raise ValueError(
+                "OnUnauthenticatedRequest must be one of: %s"
+                % ", ".join(valid_actions)
+            )
+
+
+class FixedResponseActionConfig(AWSProperty):
+    props = {
+        'ContentType': (basestring, False)
+        'MessageBody': (basestring, True)
+        'StatusCode': (basestring, True)
+    }
+
+    def validate(self):
+        valid_types = [
+            'text/plain',
+            'text/css',
+            'test/html',
+            'application/javascript',
+            'application/json'
+        ]
+        if (self.properties.get('ContentType', None) and
+            self.properties['ContentType'] not in valid_types):
+
+            raise ValueError(
+                "ContentType must be one of: %s"
+                % ", ".join(valid_actions)
+            )
+
+        if len(self.properties.get('MessageBody', "")) > 1024:
+            raise ValueError(
+                "MessageBody of length: %s is greater than maximum
+                allowed length of 1024"
+                % len(self.properties.get('MessageBody', ""))
+            )
+
+
+class RedirectActionConfig(AWSProperty):
+    props = {
+        'Host': (basestring, False)
+        'Path': (basestring, False)
+        'Port': (integer, False)
+        'Protocol': (basestring, False)
+        'Query': (basestring, False)
+        'StatusCode': (basestring, True)
+    }
+
+    def validate(self):
+        valid_codes = ['HTTP_301', 'HTTP_302']
+
+        if (self.properties['StatusCode'] not in valid_codes):
+
+            raise ValueError(
+                "StatusCode must be one of: %s"
+                % ", ".join(valid_codes)
+            )
+
+        for prop in ['Host', 'Path']:
+            if len(self.properties.get(prop, "")) not in range(1, 129):
+                raise ValueError(
+                    "%s of length: %s is out of range 1-128"
+                    % (prop, len(self.properties.get(prop, "")))
+
+        if len(self.properties.get('Query', "")) > 128:
+            raise ValueError(
+                "Query of length: %s is greater than maximum
+                allowed length of 128"
+                % len(self.properties.get('Query', ""))
+            )
 
 
 class Condition(AWSProperty):
