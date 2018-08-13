@@ -26,9 +26,9 @@ class Action(AWSProperty):
     props = {
         'AuthenticateCognitoConfig': (AuthenticateCognitoActionConfig, False),
         'AuthenticateOidcConfig': (AuthenticateOidcActionConfig, False),
-        'FixedResponseConfig': (FixedResponseActionConfig, False)
+        'FixedResponseConfig': (FixedResponseActionConfig, False),
         'Order': (basestring, False),
-        'RedirectConfig' (RedirectActionConfig, False),
+        'RedirectConfig': (RedirectActionConfig, False),
         'TargetGroupArn': (basestring, False),
         'Type': (basestring, True)
     }
@@ -48,7 +48,7 @@ class Action(AWSProperty):
             )
 
         if (self.properties.get("Order") and
-                self.properties["Order"] not in range(1, 50001):
+                self.properties["Order"] not in range(1, 50001)):
             raise ValueError(
                 "Order of length: %s is out of range 1-50000"
                 % self.properties["Order"]
@@ -57,13 +57,13 @@ class Action(AWSProperty):
 
 class AuthenticateCognitoActionConfig(AWSProperty):
     props = {
-        'AuthenticationRequestExtraParams': (basestring, False)
-        'OnUnauthenticatedRequest': (basestring, False)
-        'Scope': (basestring, False)
-        'SessionCookieName': (basestring, False)
-        'SessionTimeout': (integer, False)
-        'UserPoolArn': (basestring, True)
-        'UserPoolClientId': (basestring, True)
+        'AuthenticationRequestExtraParams': (basestring, False),
+        'OnUnauthenticatedRequest': (basestring, False),
+        'Scope': (basestring, False),
+        'SessionCookieName': (basestring, False),
+        'SessionTimeout': (integer, False),
+        'UserPoolArn': (basestring, True),
+        'UserPoolClientId': (basestring, True),
         'UserPoolDomain': (basestring, True)
     }
 
@@ -80,16 +80,16 @@ class AuthenticateCognitoActionConfig(AWSProperty):
 
 class AuthenticateOidcActionConfig(AWSProperty):
     props = {
-        'AuthenticationRequestExtraParams': (basestring, False)
-        'AuthorizationEndpoint': (basestring, True)
-        'ClientId': (basestring, True)
-        'ClientSecret': (basestring, True)
-        'Issuer': (basestring, True)
-        'OnUnauthenticatedRequest': (basestring, False)
-        'Scope': (basestring, False)
-        'SessionCookieName': (basestring, False)
-        'SessionTimeout': (integer, False)
-        'TokenEndpoint': (basestring, True)
+        'AuthenticationRequestExtraParams': (basestring, False),
+        'AuthorizationEndpoint': (basestring, True),
+        'ClientId': (basestring, True),
+        'ClientSecret': (basestring, True),
+        'Issuer': (basestring, True),
+        'OnUnauthenticatedRequest': (basestring, False),
+        'Scope': (basestring, False),
+        'SessionCookieName': (basestring, False),
+        'SessionTimeout': (integer, False),
+        'TokenEndpoint': (basestring, True),
         'UserInfoEndpoint': (basestring, True)
     }
 
@@ -106,8 +106,8 @@ class AuthenticateOidcActionConfig(AWSProperty):
 
 class FixedResponseActionConfig(AWSProperty):
     props = {
-        'ContentType': (basestring, False)
-        'MessageBody': (basestring, True)
+        'ContentType': (basestring, False),
+        'MessageBody': (basestring, True),
         'StatusCode': (basestring, True)
     }
 
@@ -129,19 +129,18 @@ class FixedResponseActionConfig(AWSProperty):
 
         if len(self.properties.get('MessageBody', "")) > 1024:
             raise ValueError(
-                "MessageBody of length: %s is greater than maximum
-                allowed length of 1024"
+                "MessageBody of length: %s is greater than allowed length of 1024"
                 % len(self.properties.get('MessageBody', ""))
             )
 
 
 class RedirectActionConfig(AWSProperty):
     props = {
-        'Host': (basestring, False)
-        'Path': (basestring, False)
-        'Port': (integer, False)
-        'Protocol': (basestring, False)
-        'Query': (basestring, False)
+        'Host': (basestring, False),
+        'Path': (basestring, False),
+        'Port': (integer, False),
+        'Protocol': (basestring, False),
+        'Query': (basestring, False),
         'StatusCode': (basestring, True)
     }
 
@@ -160,11 +159,11 @@ class RedirectActionConfig(AWSProperty):
                 raise ValueError(
                     "%s of length: %s is out of range 1-128"
                     % (prop, len(self.properties.get(prop, "")))
+                )
 
         if len(self.properties.get('Query', "")) > 128:
             raise ValueError(
-                "Query of length: %s is greater than maximum
-                allowed length of 128"
+                "Query of length: %s is greater than allowed length of 128"
                 % len(self.properties.get('Query', ""))
             )
 
