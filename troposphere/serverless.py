@@ -247,6 +247,24 @@ class DomainConfiguration(AWSProperty):
             )
 
 
+class EndpointConfiguration(AWSProperty):
+    props = {
+        "Type": (basestring, False),
+        "VPCEndpointIds": (list, False)
+    }
+
+    def validate(self):
+        valid_types = ["REGIONAL", "EDGE", "PRIVATE"]
+        if (
+            "Type" in self.properties
+            and self.properties["Type"]
+            not in valid_types
+        ):
+            raise ValueError(
+                "EndpointConfiguration Type must be REGIONAL, EDGE or PRIVATE"
+            )
+
+
 class Api(AWSObject):
     resource_type = "AWS::Serverless::Api"
 
@@ -343,7 +361,14 @@ class KinesisEvent(AWSObject):
     props = {
         'Stream': (basestring, True),
         'StartingPosition': (starting_position_validator, True),
-        'BatchSize': (positive_integer, False)
+        'BatchSize': (positive_integer, False),
+        'BisectBatchOnFunctionError': (bool, False),
+        'DestinationConfig': (DestinationConfig, False),
+        'Enabled': (bool, False),
+        'MaximumBatchingWindowInSeconds': (positive_integer, False),
+        'MaximumRecordAgeInSeconds': (integer_range(60, 604800), False),
+        'MaximumRetryAttempts': (positive_integer, False),
+        'ParallelizationFactor': (integer_range(1, 10), False)
     }
 
 
